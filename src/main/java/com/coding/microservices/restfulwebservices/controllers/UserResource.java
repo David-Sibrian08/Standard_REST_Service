@@ -4,6 +4,8 @@ import com.coding.microservices.restfulwebservices.DAO.UserDAOService;
 import com.coding.microservices.restfulwebservices.exceptions.UserNotFoundException;
 import com.coding.microservices.restfulwebservices.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,15 +27,19 @@ public class UserResource {
     }
 
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable int id) {
+    public EntityModel<User> getUser(@PathVariable int id) {
 
-        User user =  userDAOService.findOne(id);
+        User user = userDAOService.findOne(id);
 
         if (user == null) {
             throw new UserNotFoundException("id- " + id);
         }
 
-        return user;
+        EntityModel<User> model = new EntityModel<>(user);
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsers());
+        model.add(linkTo.withRel("all-users"));
+
+        return model;
     }
 
     @PostMapping(value = "/users")
