@@ -6,8 +6,9 @@ import com.coding.microservices.restfulwebservices.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.hateoas.EntityLinks;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -15,7 +16,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Locale;
 
 @RestController
 public class UserResource {
@@ -33,7 +33,7 @@ public class UserResource {
     }
 
     @GetMapping("/users/{id}")
-    public EntityModel<User> getUser(@PathVariable int id) {
+    public Resource<User> getUser(@PathVariable int id) {
 
         User user = userDAOService.findOne(id);
 
@@ -41,11 +41,11 @@ public class UserResource {
             throw new UserNotFoundException("id- " + id);
         }
 
-        EntityModel<User> model = new EntityModel<>(user);
-        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsers());
-        model.add(linkTo.withRel("all-users"));
+        Resource<User> resource = new Resource<>(user);
+        ControllerLinkBuilder linkTo =ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(this.getClass()).getAllUsers());
+        resource.add(linkTo.withRel("all-users"));
 
-        return model;
+        return resource;
     }
 
     @PostMapping(value = "/users")
