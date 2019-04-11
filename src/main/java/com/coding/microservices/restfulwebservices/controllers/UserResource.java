@@ -4,6 +4,7 @@ import com.coding.microservices.restfulwebservices.DAO.UserDAOService;
 import com.coding.microservices.restfulwebservices.exceptions.UserNotFoundException;
 import com.coding.microservices.restfulwebservices.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 public class UserResource {
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     UserDAOService userDAOService;
@@ -67,5 +72,10 @@ public class UserResource {
         if (user == null) {
             throw new UserNotFoundException("id- " + id);
         }
+    }
+
+    @GetMapping(value="/i18n", produces = "text/plain")
+    public String greetUser(@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+        return messageSource.getMessage("greeting.message", null, locale);
     }
 }
