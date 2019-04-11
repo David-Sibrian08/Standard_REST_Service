@@ -5,6 +5,7 @@ import com.coding.microservices.restfulwebservices.exceptions.UserNotFoundExcept
 import com.coding.microservices.restfulwebservices.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +76,7 @@ public class UserResource {
     }
 
     @GetMapping(value="/i18n", produces = "text/plain")
-    public String greetUser(@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
-        return messageSource.getMessage("greeting.message", null, locale);
+    public String greetUser() {
+        return messageSource.getMessage("greeting.message", null, LocaleContextHolder.getLocale());
     }
 }
