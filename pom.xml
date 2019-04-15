@@ -74,6 +74,11 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>2.6.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.rkonovalov</groupId>
+			<artifactId>json-ignore</artifactId>
+			<version>1.0.8</version>
+		</dependency>
 	</dependencies>
 
 	<build>

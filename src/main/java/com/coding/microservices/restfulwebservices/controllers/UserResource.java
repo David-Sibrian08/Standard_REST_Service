@@ -3,6 +3,7 @@ package com.coding.microservices.restfulwebservices.controllers;
 import com.coding.microservices.restfulwebservices.DAO.UserDAOService;
 import com.coding.microservices.restfulwebservices.exceptions.UserNotFoundException;
 import com.coding.microservices.restfulwebservices.model.User;
+import com.jfilter.filter.FieldFilterSetting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -26,6 +27,7 @@ public class UserResource {
     UserDAOService userDAOService;
 
 
+    @FieldFilterSetting(fields = {"birthdate"})
     @GetMapping(value = "/users")
     public List<User> getAllUsers() {
         return userDAOService.findAll();
