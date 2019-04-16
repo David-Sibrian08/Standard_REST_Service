@@ -1,21 +1,27 @@
 package com.coding.microservices.restfulwebservices.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
 @ApiModel(description="All necessary details about the user")
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+
+    @Id
+    @GeneratedValue
     private Integer id;
 
     @ApiModelProperty(notes = "Name should be a minimum 2 characters")
