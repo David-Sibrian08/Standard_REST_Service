@@ -9,9 +9,11 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @ApiModel(description="All necessary details about the user")
 @Entity
@@ -31,4 +33,7 @@ public class User {
     @ApiModelProperty(notes = "Birth date should always be in the past")
     @Past
     private Date birthdate;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> Post;
 }
