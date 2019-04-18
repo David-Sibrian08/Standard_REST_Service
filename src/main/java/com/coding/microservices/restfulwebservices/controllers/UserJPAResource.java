@@ -1,6 +1,7 @@
 package com.coding.microservices.restfulwebservices.controllers;
 
 import com.coding.microservices.restfulwebservices.exceptions.UserNotFoundException;
+import com.coding.microservices.restfulwebservices.model.Post;
 import com.coding.microservices.restfulwebservices.model.User;
 import com.coding.microservices.restfulwebservices.repository.UserRepository;
 import com.jfilter.filter.FieldFilterSetting;
@@ -65,5 +66,16 @@ public class UserJPAResource {
     @DeleteMapping("/jpa/users/{id}")
     public void deleteUser(@PathVariable int id) {
         userRepository.deleteById(id);
+    }
+
+    @GetMapping(value = "/jpa/users/{id}/posts")
+    public List<Post> getAllUserPosts(@PathVariable int id) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (!userOptional.isPresent()) {
+            throw new UserNotFoundException("id- " + id);
+        }
+
+        return userOptional.get().getPosts();
     }
 }

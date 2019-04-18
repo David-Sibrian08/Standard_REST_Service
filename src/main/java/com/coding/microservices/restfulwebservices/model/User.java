@@ -4,12 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -18,7 +14,6 @@ import java.util.List;
 @ApiModel(description="All necessary details about the user")
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class User {
 
@@ -34,6 +29,8 @@ public class User {
     @Past
     private Date birthdate;
 
-    @OneToMany(mappedBy = "user")
-    private List<Post> Post;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Post> posts;
+
+    protected User() {}
 }
