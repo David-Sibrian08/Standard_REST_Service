@@ -3,6 +3,7 @@ package com.coding.microservices.restfulwebservices.controllers;
 import com.coding.microservices.restfulwebservices.exceptions.UserNotFoundException;
 import com.coding.microservices.restfulwebservices.model.Post;
 import com.coding.microservices.restfulwebservices.model.User;
+import com.coding.microservices.restfulwebservices.repository.PostRepository;
 import com.coding.microservices.restfulwebservices.repository.UserRepository;
 import com.jfilter.filter.FieldFilterSetting;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class UserJPAResource {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PostRepository postRepository;
 
     @FieldFilterSetting(fields = {"birthdate"})
     @GetMapping(value = "/jpa/users")
@@ -47,7 +50,7 @@ public class UserJPAResource {
     }
 
     @PostMapping(value = "/jpa/users")
-    public void createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
         User savedUser = userRepository.save(user);
 
         //Create a URI for the location of the resource that was created
@@ -60,13 +63,15 @@ public class UserJPAResource {
 
         //Build the full URI with the location
         //We will also return a 201 Created status
-        ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).build();
     }
 
     @DeleteMapping("/jpa/users/{id}")
     public void deleteUser(@PathVariable int id) {
         userRepository.deleteById(id);
     }
+
+    //////////////////POST OPERATIONS/////////////////////////////
 
     @GetMapping(value = "/jpa/users/{id}/posts")
     public List<Post> getAllUserPosts(@PathVariable int id) {
@@ -77,5 +82,28 @@ public class UserJPAResource {
         }
 
         return userOptional.get().getPosts();
+    }
+
+    @PostMapping(value = "/jpa/users/{id}/posts")
+    public ResponseEntity<Object> createPost(@PathVariable int id, @RequestBody Post post) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (!userOptional.isPresent()) {
+            throw new UserNotFoundException("id- " + id);
+        }
+
+        User user = userOptional.get();
+
+        post.setUser(user);
+
+        postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(post.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 }
